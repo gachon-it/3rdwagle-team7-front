@@ -1,6 +1,6 @@
 import React from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Flex, Image } from 'antd';
+import { Button, Form, Input, Flex, Image, message } from 'antd';
 import fingerPrincess from '../assets/fingerPrincess.png';
 import axios from 'axios';
 import { useService } from '../context/ServiceContext';
@@ -46,21 +46,46 @@ function LoginComponent() {
 
   const onFinish = async (values) => {
     console.log('Received values of form: ', values);
-    const res = await axios.post('http://13.125.210.171:8080/api/login', {
-      studentNumber: values.studentID,
-      password: values.password,
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-    console.log(res);
 
-    if(res.data.code == 200){
-      navigator('/selection-list', { replace: true })
+    try{
+      const res = await axios.post('http://localhost:8080/api/login', {
+        studentNumber: values.studentID,
+        password: values.password,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      // console.log(res);
+
+      const user = {
+        username: res.data.data.username,
+        email: res.data.data.email,
+        major: res.data.data.major,
+        role: res.data.data.role,
+        studentNumber: res.data.data.studentNumber,
+      };
+ 
+      // console.log(user)
+      // console.log("===============")
+      // console.log(res.data.data)
+      // serviceContext.setUser(user); // 예시: 사용자 정보 업데이트
+      
+      
+      if(res.data.code == 200){
+        navigator('/selection-list', { replace: true });
+        localStorage.setItem("token", res.data.data.studentNumber);
+        
+      }
+
+    }catch(error){
+      if (error.response && error.response.status === 400) {
+        message.error('로그인 실패!'); // 400 에러 메시지
+      }
     }
 
-  };
+  }
   return (
     <Form
       name="login"

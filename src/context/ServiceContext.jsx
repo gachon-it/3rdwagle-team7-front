@@ -4,9 +4,10 @@ import React, { createContext, useCallback, useState } from 'react';
 
 const contextDefaultValues = {
   user: {
-    name: 'John Doe',
-    age: 26,
-    hobbies: ['learning'],
+    username: 'John Doe',
+    email: '',
+    major: '',
+    studentNumber: '',
   },
   logInfo: () => {},
   defaultUserInfo: () => {},
