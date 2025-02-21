@@ -4,6 +4,7 @@ import { Button, Form, Input, Flex, Image } from 'antd';
 import fingerPrincess from '../assets/fingerPrincess.png';
 import axios from 'axios';
 import { useService } from '../context/ServiceContext';
+import { useNavigate } from 'react-router';
 
 function LandingPage() {
   return (
@@ -40,16 +41,25 @@ function ImageComment() {
 // 로그인 창 컴포넌트
 function LoginComponent() {
   const serviceContext = useService();
+  const navigator = useNavigate()
   console.log(serviceContext.user);
 
   const onFinish = async (values) => {
     console.log('Received values of form: ', values);
-    const res = await axios.post('http://localhost:3001/login', values, {
+    const res = await axios.post('http://13.125.210.171:8080/api/login', {
+      studentNumber: values.studentID,
+      password: values.password,
+    }, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
     console.log(res);
+
+    if(res.data.code == 200){
+      navigator('/selection-list', { replace: true })
+    }
+
   };
   return (
     <Form
